@@ -7,7 +7,7 @@ pipeline {
     }
 
     environment {
-        DOCKER_HUB_USER = 'your_dockerhub_username' // Replace with your actual Docker Hub username
+        DOCKER_HUB_USER = 'likithc' // Replace with your actual Docker Hub username
         IMAGE_NAME      = 'employee-management-app'
         IMAGE_TAG       = "${BUILD_NUMBER}"
     }

@@ -1,5 +1,5 @@
-# Stage 1: Runtime
-FROM openjdk:17-jdk-slim
+# Use an actively maintained LTS Java 17 runtime base image
+FROM eclipse-temurin:17-jdk-jammy
 
 WORKDIR /app
 
