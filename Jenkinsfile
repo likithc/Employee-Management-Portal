@@ -54,15 +54,14 @@ pipeline {
             }
         }
 
-        stage('Deploy') {
+       stage('Deploy') {
             steps {
                 echo 'Deploying the application stack via Docker Compose...'
-                // Stops any old instances, pulls fresh images, and brings the stack up in the background
-                sh 'docker compose down --remove-orphans || true'
-                sh 'docker compose up -d'
+                // Added a dash to use the standalone docker-compose binary
+                sh 'docker-compose down --remove-orphans || true'
+                sh 'docker-compose up -d'
             }
         }
-    }
 
     post {
         always {
