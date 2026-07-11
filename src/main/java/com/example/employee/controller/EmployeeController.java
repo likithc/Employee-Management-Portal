@@ -1,4 +1,5 @@
 package com.example.employee.controller;
+import com.example.employee.model.Employee;
 
 import org.springframework.web.bind.annotation.*;
 import java.util.*;
