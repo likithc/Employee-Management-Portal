@@ -7,7 +7,7 @@ pipeline {
     }
 
     environment {
-        DOCKER_HUB_USER = 'likithc' // Replace with your actual Docker Hub username
+        DOCKER_HUB_USER = 'likithc' 
         IMAGE_NAME      = 'employee-management-app'
         IMAGE_TAG       = "${BUILD_NUMBER}"
     }
@@ -54,39 +54,12 @@ pipeline {
             }
         }
 
-        stage('Remove Old Container') {
+        stage('Deploy') {
             steps {
-                script {
-                    // Stop and remove existing container if it exists to avoid port conflicts
-                    sh '''
-                        docker stop employee-service || true
-                        docker rm employee-service || true
-                    '''
-                }
-            }
-        }
-
-        stage('Run New Container') {
-            steps {
-                // Running local container bound to the same network or standalone
-                // Note: If deploying the full stack on the server via compose, see Task 5.
-                sh "docker run -d --name employee-service -p 8080:8080 ${DOCKER_HUB_USER}/${IMAGE_NAME}:${IMAGE_TAG}"
-            }
-        }
-
-        stage('Health Check') {
-            steps {
-                echo 'Waiting for application to start...'
-                sleep 15
-                script {
-                    def response = sh(script: "curl -s -o /dev/null -w '%{http_code}' http://localhost:8080/actuator/health || curl -s -o /dev/null -w '%{http_code}' http://localhost:8080/api/employees || true", returnStdout: true).trim()
-                    // Accept typical successful or API response codes (200, 404 if no data, or 401 if secured)
-                    if (response != "000") {
-                        echo "Health Check Passed with response code: ${response}"
-                    } else {
-                        error "Health Check Failed. Application is unreachable."
-                    }
-                }
+                echo 'Deploying the application stack via Docker Compose...'
+                // Stops any old instances, pulls fresh images, and brings the stack up in the background
+                sh 'docker compose down --remove-orphans || true'
+                sh 'docker compose up -d'
             }
         }
     }
